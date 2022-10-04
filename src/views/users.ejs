@@ -1,0 +1,60 @@
+<%- include ('_header'); -%>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10">
+            <%- include ('table'); -%>
+        </div>
+        <div class="col-md-2">
+
+            <div class="card-body mt-4">
+                <legend>Cargar datos</legend>
+                <form action="/load" method="post" enctype="multipart/form-data">
+                    <input type="text" placeholder="Group name" name="referente" class="form-control">
+                    <input type="file" name="jsonfile" class="form-control" required>
+                    <input type="submit" name="" value="Load JSON" class="btn btn-info"/>
+                </form>
+
+            </div>
+
+            <legend class="mt-4">Filtros</legend>
+
+            <div class="form-group">
+                <select class="form-select" id="exampleSelect1">
+                    <option>Pending</option>
+                    <option>Accepted</option>
+                    <option>Review</option>
+                    <option>Discarded</option>
+                </select>
+                <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked="">
+                    <label class="form-check-label" for="flexSwitchCheckChecked">Solo con múltiples grupos</label>
+                </div>
+            </div>
+            <legend class="mt-4">Test</legend>
+            <form action="/test" method="post">
+                <input type="submit" name="" value="Test" class="btn btn-info"/>
+            </form>
+
+            <% if (posts.length > 0) { %>
+                <div class="card-body mt-4">
+                    <legend>Posts</legend>
+                    <%= posts[0].user_id %> <br>
+                    <% for(var i = 0; i < posts.length; i++) { %>
+                        <img src="<%= posts[i].post %>"> <br>
+                        <a href="<%= posts[i].post %>">Imagen <%= i + 1 %></a> <br>
+                    <% } %>
+                </div>
+                <br>
+                <form action="" method="get">
+                    <button type="submit" class="btn btn-info">Clear</button>
+                </form>
+            <% } %>
+
+
+        </div>
+    </div>
+</div>
+
+
+<%- include ('_footer') -%>

@@ -1,0 +1,30 @@
+<%- include ('_header'); -%>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10">
+            <%- include ('table'); -%>
+        </div>
+        <div class="col-md-2">
+
+            <div class="card-body mt-4">
+                <legend>Volver</legend>
+                <form action="/">
+                    <input type="submit" value="Go back" class="btn btn-info" />
+                </form>
+            </div>
+
+            <% if(exportFile){ %>
+                <legend class="mt-4">Exportar</legend>
+                <form action="/download" method="post">
+                    <input type="text" placeholder="File name" name="filename" class="form-control" autofocus>
+                    <input type="submit" name="" value="Export JSON" class="btn btn-info"/>
+                </form>
+            <% }  %>
+
+        </div>
+    </div>
+</div>
+
+
+<%- include ('_footer') -%>

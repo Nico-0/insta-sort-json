@@ -1,0 +1,59 @@
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr class="table-success">
+        <td>n°</td>
+        <td>photo</td>
+        <td>name</td>
+        <td>biography</td>
+        <td>numeros</td>
+        <td>privacidad</td>
+        <td>Actions</td>
+    </tr>
+    </thead>
+    <tbody>
+    <% if (data) { %>
+        <% for(var i = 0; i < data.length; i++) { %>
+            <tr class="table-dark">
+                <td><%= (i + 1) %></td>
+                <td><img src="<%= data[i].profile_pic %>" width="300"></td>
+                <td><a href="https://www.instagram.com/<%= data[i].username %>"><%= data[i].username %></a> <br> <%= data[i].full_name %></td>
+                <td style="white-space: pre-wrap"><%- data[i].biography %> <br> <a href="<%= data[i].external_url %>"><%= data[i].external_url %></a></td>
+                <td><%= data[i].post_count %> posts <br> <%= data[i].followed_by %> seguidores <br> <%= data[i].follow %> seguidos <br> <%= data[i].mutual_followed_by %> mutuos</td>
+                <td style="max-width: 110px"><% if(!data[i].is_private && home){ %>
+                        Público <br>
+                        <form action="" method="get">
+                            <input type="hidden" name="view" value="<%= data[i].id %>">
+                            <button type="submit" class="btn btn-info">View posts</button>
+                        </form>
+                    <% } else{ %>
+                        Privado
+                    <% } %></td>
+                <td>
+                    <% if(home){ %>
+                        <form action="/accept/<%= data[i].id %>" method="post">
+                            <input type="submit" name="" value="Accept" class="btn btn-success"/>
+                        </form>
+                        <form action="/review/<%= data[i].id %>" method="post">
+                            <input type="submit" name="" value="Review" class="btn btn-warning"/>
+                        </form>
+                        <form action="/discard/<%= data[i].id %>" method="post">
+                            <input type="submit" name="" value="Discard" class="btn btn-danger"/>
+                        </form>
+                    <% }  %>
+                    <% if(resetButton){ %>
+                        <form action="/reset/<%= data[i].id %>" method="post">
+                            <input type="submit" name="" value="Reset" class="btn btn-warning"/>
+                        </form>
+                    <% }  %>
+                    <% if(deleteButton){ %>
+                        <form action="/delete/<%= data[i].id %>" method="post">
+                            <input type="submit" name="" value="Delete" class="btn btn-danger"/>
+                        </form>
+                    <% }  %>
+
+                </td>
+            </tr>
+        <% } %>
+    <% } %>
+    </tbody>
+</table>
