@@ -2,7 +2,7 @@ const controllerList = {};
 
 controllerList.list = (req, res) => {
     req.getConnection((err, conn) => {
-        conn.query('SELECT * FROM user where accepted = 0 and review = 0 and discarded = 0 order by last_click desc, updated asc LIMIT 20', (err, users) => {
+        conn.query('SELECT * FROM user where accepted = 0 and review = 0 and discarded = 0 and exported = 0 order by last_click desc, updated asc LIMIT 20', (err, users) => {
             if (err) {
                 res.json(err);
             }

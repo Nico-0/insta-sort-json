@@ -16,6 +16,7 @@ router.post('/discard/:id', controllerList.discard);
 router.post('/reset/:id', controllerList.reset);
 router.post('/delete/:id', controllerList.delete);
 router.post('/load', upload.single("jsonfile"), controller.load);
+router.post('/updateThumbs', upload.single("jsonfile"), controller.updateThumbs);
 router.post('/test', controller.test);
 router.post('/download', controller.download);
 

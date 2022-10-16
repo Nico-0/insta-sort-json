@@ -15,6 +15,10 @@ controller.test = (req, res) => {
     res.redirect('/')
 }
 
+/**
+ * Load users from a json file into the database, and download thumbs
+ * Filters out users with incomplete data
+ */
 controller.load = (req, res) => {
     console.log("received: "+ req.file.originalname)
 
@@ -98,6 +102,50 @@ controller.load = (req, res) => {
 
 }
 
+
+/**
+ * Load a new json file to update broken thumbs, in case the previously used one had expired links
+ * Filters out users with full data
+ */
+controller.updateThumbs = (req, res) => {
+    console.log("received: "+ req.file.originalname)
+
+    const object = JSON.parse(req.file.buffer.toString());
+    console.log("original count: "+ object.length)
+    const obj = object.filter(item => item.biography === undefined)
+    console.log("incomplete users count: "+ obj.length)
+
+    console.log('\n')
+    // bajar fotos de perfil
+    obj.forEach(element => {
+        const link = element.profile_pic_url
+        const filename = decodeURIComponent(path.basename(url.parse(link).pathname))
+        const mypath = path.join('./thumbs/', filename)
+
+
+        if (fs.existsSync(mypath)) {
+            //file exists
+            console.log(filename + ' ya existe')
+        } else {
+            //file not exists
+            console.log(filename + ' es nueva')
+        }
+
+        const dir = fs.createWriteStream(mypath)
+        const request = https.get(link, function (response){
+            //console.log(response.headers)
+            response.pipe(dir)
+            console.log('consolidado: ' + filename)
+        })
+
+
+    });
+    console.log('thumbs updated\n')
+}
+
+/**
+ * Transfer currently accepted users to a json file, and set the exported flag on them
+ */
 controller.download = (req, res) => {
     let filename = req.body.filename;
     if(filename === '') filename = 'users'
