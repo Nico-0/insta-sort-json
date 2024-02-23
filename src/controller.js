@@ -17,7 +17,8 @@ controller.test = (req, res) => {
 
 /**
  * Load users from a json file into the database, and download thumbs
- * Filters out users with incomplete data
+ * Filters out users with incomplete data       //TODO update condition, this should allow users with basic data, so they can be processed, and later exported to query full data for them
+ *                                              //meanwhile keeping it usable with full profiles directly
  */
 controller.load = (req, res) => {
     console.log("received: "+ req.file.originalname)
@@ -50,12 +51,12 @@ controller.load = (req, res) => {
         }
         element.profile_pic_filename = filename
 
-        // links de posts
+        // links de posts recientes
         if(!element.is_private){
             const posts = element.edge_owner_to_timeline_media.edges
-            const images = posts.filter(post => !post.node.is_video).slice(0, 4);
+            const images = posts.filter(post => !post.is_unified_video).slice(0, 4);    //todo find which flag is used to skip videos like before, but now videos have image thumbnails either way
             images.forEach(img => {
-                const registro = [element.id, img.node.thumbnail_src];
+                const registro = [element.id, img.image_versions2.candidates[0].url];
                 postBD.push(registro);
             })
         }
@@ -105,19 +106,21 @@ controller.load = (req, res) => {
 
 /**
  * Load a new json file to update broken thumbs, in case the previously used one had expired links
- * Filters out users with full data
+ * Filters out users with full data     //TODO update condition. Currently re downloads images without comparing to username
+ *                                      // Basic profile gives lower resolution than full profile
+ *                                      //TODO do not re download if same or higher image already works?
  */
 controller.updateThumbs = (req, res) => {
     console.log("received: "+ req.file.originalname)
 
     const object = JSON.parse(req.file.buffer.toString());
     console.log("original count: "+ object.length)
-    const obj = object.filter(item => item.biography === undefined)
-    console.log("incomplete users count: "+ obj.length)
+    //const obj = object.filter(item => item.biography === undefined)
+    //console.log("incomplete users count: "+ obj.length)
 
     console.log('\n')
     // bajar fotos de perfil
-    obj.forEach(element => {
+    object.forEach(element => {
         const link = element.profile_pic_url
         const filename = decodeURIComponent(path.basename(url.parse(link).pathname))
         const mypath = path.join('./thumbs/', filename)
