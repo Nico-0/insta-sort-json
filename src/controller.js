@@ -31,6 +31,10 @@ controller.load = (req, res) => {
     const postBD = []
 
     console.log('\n')
+    if (!fs.existsSync('./thumbs')) {
+        fs.mkdirSync('./thumbs', { recursive: true });
+        console.log(`Created './thumbs' Folder`);
+    }
     // bajar fotos de perfil
     obj.forEach(element => {
         const link = element.profile_pic_url_hd
@@ -52,9 +56,11 @@ controller.load = (req, res) => {
         element.profile_pic_filename = filename
 
         // links de posts recientes
+        // edges[0].image_versions2.candidates[0].url for the first image
+        // edges[0].carousel_media[9].image_versions2.candidates[0].url for the multiple in a post
         if(!element.is_private){
             const posts = element.edge_owner_to_timeline_media.edges
-            const images = posts.filter(post => !post.is_unified_video).slice(0, 4);    //todo find which flag is used to skip videos like before, but now videos have image thumbnails either way
+            const images = posts.filter(post => !post.is_unified_video).slice(0, 4);    //todo video flag is "media_type": 2, but now videos have image thumbnails either way
             images.forEach(img => {
                 const registro = [element.id, img.image_versions2.candidates[0].url];
                 postBD.push(registro);
